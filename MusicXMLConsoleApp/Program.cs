@@ -1,5 +1,6 @@
 ﻿using MusicXml;
 using MusicXml.Domain;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Xml;
 
@@ -196,6 +197,28 @@ namespace MusicXMLMiniApp
                 else
                 {
                     Console.Write("This song does not contain Transpose.");
+                }
+
+                XmlNodeList voiceNodes = doc.SelectNodes("/score-partwise/part/measure/note/voice");
+                if(voiceNodes is not null)
+                {
+                    Console.WriteLine("Do you want to change voice value [y/n]?");
+                    if (Console.ReadLine().ToLower() == "y")
+                    {
+                        Console.Write("Please enter voice changed value: ");
+                        int voiceValue = int.Parse(Console.ReadLine());
+                        int snapshotVoiceValue = int.Parse(voiceNodes[0].InnerText);
+                        foreach(XmlNode xmlNode in voiceNodes)
+                        {
+                            xmlNode.InnerText = voiceValue.ToString();
+                        }
+                        
+                        Console.WriteLine($"Voice was changed from {snapshotVoiceValue} to {voiceValue}.");
+                    }
+                }
+                else
+                {
+                    Console.Write("This song does not contain Voice.");
                 }
 
                 // Save the modified document
